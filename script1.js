@@ -1,5 +1,5 @@
 var selectedGenre = "";
-var horrorArray = ["supernatural", "horror", "terror", "fear"];
+var horrorArray = ["supernatural", "horror", "ghost", "monster", "creature"];
 var theResult = "";
 
 $(document).ready(function(){
@@ -12,8 +12,14 @@ function getWordArray(theWord) {
         resolve($.get('https://api.datamuse.com/words?rel_trg=' + theWord));
     });
 }
+function getAdjective(theWord) {
+    return new Promise(function (resolve, reject) {
+        resolve($.get('https://api.datamuse.com/words?rel_jjb=' + theWord));
+    });
+}
 
 function boot() {
+    $("#theText").hide();
     var theList = document.getElementById("drList");
     theResult = "";
     selectedGenre = theList.options[theList.selectedIndex].text;
@@ -61,37 +67,50 @@ function makeSentence(obj) {
     }
 
     noun1 = randomFromArray(nounArr);
+    if (Math.random() < 0.5) {
+        noun1 = RiTa.singularize(noun1);
+    }
+    else {
+        noun1 = RiTa.pluralize(noun1);
+    }
     adj1 = randomFromArray(adjArr);
     
     if (Math.random() < 0.5) {
-        phrase01 = (RiTa.evaluate('( his | her | the [3] )') + " " + RiTa.evaluate('(attic|mansion|house)'));
+        phrase01 = (" " + RiTa.evaluate('(in the attic| in the mansion| in the house| in the basement| in the room|in ' + RiTa.evaluate('(his | her )') + ' subconscious |in ' + RiTa.evaluate('(his | her )') + ' mind| in the meadows|in the forest|)'));
     }
     else {
-        phrase01 = "";
+        phrase01 = (" " + RiTa.evaluate('(at[2]|of)') + " " + randomFromArray(theStreets));
     }
 
     //
     var theOption = getRndInteger(1,5);
-    theOption = 1 //DEBUG
+    theOption = 2 //DEBUG
     switch(theOption) {
         case 1:
-            if (Math.random() < 0.5) {
-                noun1 = RiTa.singularize(noun1);
-            }
-            else {
-                noun1 = RiTa.pluralize(noun1);
-            }
-            theResult += ("The " + noun1 + " " + RiTa.evaluate('( of | in )') + " " + phrase01);
+            theResult = titleCase("The " + noun1 + phrase01);
+            showResult();
             break;
         case 2:
+            getAdjective(noun1).then(function(obj){
+                var adjObj = randomFromArray(obj)
+                theResult = titleCase("The " + adjObj.word + " " + noun1);
+                showResult();
+            });
             break;
         case 3:
+            // "verb+ing + the + adj1"
             break;
         case 4:
             break;
         case 5:
             break;
     }
+
+}
+
+function showResult() {
+    $("#theText").html(theResult);
+    $("#theText").fadeIn(1500);
 }
 
 //
@@ -101,6 +120,13 @@ function getRndInteger(min, max) {
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
+function titleCase(str) {
+    var splitStr = str.toLowerCase().split(' ');
+    for (var i = 0; i < splitStr.length; i++) {
+        splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
+    }
+    return splitStr.join(' '); 
+ }
 function randomFromArray(items) {
     return items[Math.floor(Math.random()*items.length)];
 }
@@ -108,6 +134,6 @@ function randomFromArray(items) {
 
 
 /*
-1) "The" + [noun]
+1) "The" + vampire in/of the 
 2) 
 */
