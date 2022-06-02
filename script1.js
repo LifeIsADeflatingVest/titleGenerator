@@ -242,6 +242,7 @@ function showResult() {
 	$("#span"+cnt).hide();
 	$("#span"+cnt).html(theResult);
 	$("#span"+cnt).fadeIn(1500);
+	scrollBot('textFrame');
 	cnt++;
 }
 
@@ -282,4 +283,11 @@ function actionText(b) {
 			$("#theText").html("");
 		}
 	}
+}
+
+const scrollBot = (id) => {
+    const element = $(`#${id}`);
+    element.animate({
+        scrollTop: element.prop("scrollHeight")
+    }, 500);
 }
