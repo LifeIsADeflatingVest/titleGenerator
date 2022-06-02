@@ -1,0 +1,125 @@
+/* width */
+::-webkit-scrollbar {
+    width: 0.2em;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 1em #403340; 
+    border-radius: 2em;
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #284563; 
+    border-radius: 2em;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #403340; 
+  }
+  body {
+      background-color:black;
+      color:cornsilk;
+      font-size:1em;
+      overflow-x: hidden;
+  }
+  h1 {
+      font-size:2.5em;
+      font-family: 'Twinkle Star', cursive;
+  }
+  h2 {
+      font-size:1.3em;
+      font-family: 'Twinkle Star', cursive;
+  }
+  h3 {
+      font-size:1.2em;
+      margin-top:2.5em;
+      font-family: 'Twinkle Star', cursive;
+  }
+  p {
+    font-family: 'Cairo', sans-serif;
+      font-size:1em;
+      margin-top: 1em;
+  }
+  a:link {
+    color: red;
+    text-decoration:none;
+  }
+  a:visited {
+    color: cyan;
+  }
+  a:hover {
+    color: hotpink;
+  }
+  a:active {
+    color: blue;
+  }
+  select {
+      font-size:1.1em;
+      padding:0.3em;
+      margin-left:0.5em;
+      margin-top:0.5em;
+      font-family: 'Itim', cursive;
+      background-color: darkslategray;
+      color:blanchedalmond;
+      text-align: center;
+      border-radius: 0.5em;
+      margin-bottom: 2em;
+  }
+  .button {
+      font-family: 'Itim', cursive;
+      font-size:1em;
+      margin-left:0.5em;
+      margin-top:0.5em;
+      padding:0.7em;
+      border-radius:0.5em;
+      background: #2e5a9e;
+      color:blanchedalmond;
+  }
+  .button:hover {
+      animation: btn_hover 0.6s;
+      animation-fill-mode: forwards;
+  }
+  @keyframes btn_hover{
+      0% {
+          box-shadow: 0 0 0 0 cornsilk;
+      }
+      100% {
+          box-shadow: 0.7em 0.7em 1.5em 0 cornsilk;
+      }
+  }
+  #container {
+      width:50%;
+      text-align:center;
+      margin: 0 auto;
+      margin-bottom: 3em;
+  }
+  #theText {
+      display:none;
+      text-align:center;
+      margin: 0 auto;
+      margin-top:3em;
+      width:50%;
+      background-color: rgba(0,0,0,0.5);
+      padding: 1em;
+      font-size: 1.3em;
+      box-sizing: border-box;
+  }
+  @media only screen and (max-width: 600px) {
+      #container {
+          width: 98%;
+      }
+      #theText {
+          width:95%;
+      }
+      .button {
+          font-family:Verdana;
+          font-size:1em;
+          margin-left:0.2em;
+          margin-top:0.5em;
+          padding:0.4em;
+      }
+  }
+  

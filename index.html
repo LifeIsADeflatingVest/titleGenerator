@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" rel="stylesheet">
+    <meta name="robots" content="noindex">
+    <meta name="theme-color" content="#000000">
+    <meta charset="utf-8">
+    <title>Title Generator</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300&family=Itim&family=Twinkle+Star&display=swap" rel="stylesheet"> 
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/rita/2.6.1/rita.js"
+        integrity="sha512-K+EvDE/124txA0MSLpqlDXYJdqW09VS4iUT8bkZyW+qQcytpj0SWWHsKu3t4HlUotoW6vkHoroyQ2NQTgI8Ajw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+        integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="script1.js"></script>	
+</head>
+
+<body>
+    <div id="container">
+        <h1 id="theTitle">
+            Title Generator
+        </h1>
+        <p id="intro">Select one of the genres on the list and press 'Generate'.</p>
+        <div id="inputs">
+            <form id="dropDownList">
+                <select id = "drList">
+                    <option>Horror</option>
+                    <option>Fantasy</option>
+                    <option>Science Fiction</option>
+                    <option>Literary</option>
+                    <option>Experimental</option>
+                    <option>Crime</option>
+                    <option>Romance</option>
+                    <option>Thriller</option>
+                </select>
+            </form>
+            <button class="button" onclick="boot();">Generate</button>
+        </div>
+        <p id="theText"></p>
+    </div>
+</body>
+
+</html>
