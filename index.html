@@ -45,7 +45,13 @@
             </form>
             <button class="button" onclick="boot();">Generate</button>
         </div>
-        <p id="theText"></p>
+		<div id="textFrame">
+			<p id="theText"></p>
+		</div>
+		<div id="butts">
+			<button style="background:darkgreen" onclick="actionText(true);" class="button">Save List</button>
+			<button style="background:darkred" onclick= "actionText(false);" class="button">Clear List</button>
+		</div>
     </div>
 </body>
 

@@ -1,5 +1,10 @@
 var selectedGenre = "";
-var horrorArray = ["supernatural", "horror", "ghost", "monster", "creature"];
+var cnt = 0;
+var madeWord;
+var randomizedLocale;
+var horrorArray = ["supernatural", "horror", "ghost", "monster", "creature", "nightmare"];
+var fantasyArray= ["supernatural", "ghost", "witch", "creature", "vampire", "werewolf", "elf", "magician", "amulet", "ring"];
+var scienceFictionArray= ["alien", "computer", "network", "robot", "cyborg", "element", "device", "computer", "entity"];
 var theResult = "";
 
 $(document).ready(function(){
@@ -22,9 +27,13 @@ function getNoun(theWord) {
         resolve($.get('https://api.datamuse.com/words?rel_jja=' + theWord));
     });
 }
+function getVerb(theWord) {
+    return new Promise(function (resolve, reject) {
+        resolve($.get('https://api.datamuse.com/words?rc=' + theWord + '&md=p'));
+    });
+}
 
 function boot() {
-    $("#theText").hide();
     var theList = document.getElementById("drList");
     theResult = "";
     selectedGenre = theList.options[theList.selectedIndex].text;
@@ -32,12 +41,29 @@ function boot() {
     switch (selectedGenre) {
         case "Horror":
             getWordArray(randomFromArray(horrorArray)).then(function(obj){
+				randomizedLocale = randomFromArray(theStreets);
                 makeSentence(obj);
             });
             break;
         case "Fantasy":
+			madeWord = "";
+			madeWord += getRi(3);
+			madeWord += getRi(2);
+			madeWord += getRi(2);
+		    getWordArray(randomFromArray(fantasyArray)).then(function(obj){
+				randomizedLocale = (madeWord + " " + randomFromArray(magicalLocales));
+                makeSentence(obj);
+            });
             break;
         case "Science Fiction":
+			madeWord = "";
+			madeWord += getRi(3);
+			madeWord += getRi(2);
+			madeWord += getRi(2);
+		    getWordArray(randomFromArray(scienceFictionArray)).then(function(obj){
+				randomizedLocale = (madeWord + " " + randomFromArray(sciFiLocales.concat(magicalLocales)));
+                makeSentence(obj);
+            });
             break;
         case "Literary":
             break;
@@ -56,9 +82,9 @@ function boot() {
 }
 
 function makeSentence(obj) {
-    var nounArr = [];
+    var nounArr = ["being"];//fallbacks
     var noun1;
-    var adjArr = [];
+    var adjArr = ["interesting"];//fallbacks
     var adj1;
     var phrase01;
 
@@ -84,12 +110,11 @@ function makeSentence(obj) {
         phrase01 = (" " + RiTa.evaluate('(in the attic| in the mansion| in the house| in the basement| in the room|in ' + RiTa.evaluate('(his | her )') + ' subconscious |in ' + RiTa.evaluate('(his | her )') + ' mind| in the meadows|in the forest|)'));
     }
     else {
-        phrase01 = (" " + RiTa.evaluate('(at[2]|of)') + " " + randomFromArray(theStreets));
+        phrase01 = (" " + RiTa.evaluate('(at[2]|of)') + " " + randomizedLocale);
     }
 
     //
     var theOption = getRndInteger(1,5);
-    theOption = 5 //DEBUG
     switch(theOption) {
         case 1:
             theResult = titleCase("The " + noun1 + phrase01);
@@ -98,9 +123,12 @@ function makeSentence(obj) {
         case 2:
             getAdjective(noun1).then(function(obj){
                 var adjObj = randomFromArray(obj)
+				if (adjObj==undefined) {
+					adjObj = RiTa.randomWord({ pos: "jj"});//fallback
+				}
                 theResult = titleCase("The " + adjObj.word + " " + noun1);
 				if (Math.random() < 0.5) {
-					theResult += titleCase((" " + RiTa.evaluate('(at[2]|of)') + " " + randomFromArray(theStreets)));
+					theResult += titleCase((" " + RiTa.evaluate('(at[2]|of)') + " " + randomizedLocale));
 				}
                 showResult();
             });
@@ -108,14 +136,50 @@ function makeSentence(obj) {
         case 3:
             getNoun(adj1).then(function(obj){
                 var nounObj = randomFromArray(obj);
+				if (nounObj==undefined) {
+					nounObj = RiTa.randomWord({ pos: "nn"});//fallback
+				}
                 theResult = titleCase("The " + adj1 + " " + nounObj.word);
 				if (Math.random() < 0.5) {
-					theResult += titleCase((" " + RiTa.evaluate('(at[2]|of)') + " " + randomFromArray(theStreets)));
+					theResult += titleCase((" " + RiTa.evaluate('(at[2]|of)') + " " + randomizedLocale));
 				}
                 showResult();
             });
             break;
-        case 4:// "verb+ing + the + adj1"
+        case 4:
+			getVerb(noun1).then(function(obj){
+				var tempArrayVerbs = ["examine", "understand", "see", "behold", "fear", "know", "dream", "escape", "imprison"]; // fallbacks
+				var tempArrayNouns = ["man", "woman", "entity", "creature", "entity", "vision"];//fallbacks
+				for (var i=0;i<obj.length;i++) {
+					if (obj[i].tags != undefined) {
+						if (obj[i].tags.includes("v")) {
+							tempArrayVerbs.push(obj[i].word);
+						}
+						else if (obj[i].tags.includes("n") && RiTa.isNoun(obj[i].word)) {
+							tempArrayNouns.push(obj[i].word);
+						}
+					}
+				}
+				var nounPhrase;
+				if (Math.random() < 0.5) {
+					nounPhrase = (RiTa.evaluate('(the | )') + " " + RiTa.pluralize(noun1));
+				}
+				else {
+					nounPhrase = ("the " + RiTa.singularize(noun1));
+				}
+                var verbObj = randomFromArray(tempArrayVerbs);
+				var nounObj = randomFromArray(tempArrayNouns);
+				if (Math.random() < 0.5) {
+					theResult = titleCase(RiTa.conjugate(verbObj, {form: RiTa.GERUND}) + " " + nounPhrase);
+				}
+				else {
+					theResult = titleCase("The " + nounObj + " who " + RiTa.conjugate(verbObj, {tense: RiTa.PAST}) + " " + nounPhrase);
+				}
+				if (Math.random() < 0.5) {
+					theResult += titleCase((" " + RiTa.evaluate('(at[2]|of)') + " " + randomizedLocale));
+				}
+                showResult();
+            });
             break;
         case 5:
 			var adjObj;
@@ -125,7 +189,7 @@ function makeSentence(obj) {
 					var nounObj = randomFromArray(obj2);
 					theResult = titleCase(adjObj.word + " " + RiTa.pluralize(noun1) + " and the " + adj1 + " " + nounObj.word);
 					if (Math.random() < 0.5) {
-						theResult += titleCase((" " + RiTa.evaluate('(at[2]|of)') + " " + randomFromArray(theStreets)));
+						theResult += titleCase((" " + RiTa.evaluate('(at[2]|of)') + " " + randomizedLocale));
 					}
 					showResult();
 				});
@@ -136,8 +200,19 @@ function makeSentence(obj) {
 }
 
 function showResult() {
-    $("#theText").html(theResult);
-    $("#theText").fadeIn(1500);
+	if (cnt>0) {
+		$("#theText").append("<br>");
+	}
+	else {
+		$("#butts").fadeIn(1500);
+	}
+	var sp = document.createElement("span");
+	sp.setAttribute("id", ("span"+cnt));
+	document.getElementById("theText").appendChild(sp);
+	$("#span"+cnt).hide();
+	$("#span"+cnt).html(theResult);
+	$("#span"+cnt).fadeIn(1500);
+	cnt++;
 }
 
 //
@@ -156,6 +231,19 @@ function titleCase(str) {
  }
 function randomFromArray(items) {
     return items[Math.floor(Math.random()*items.length)];
+}
+function getRi(n) {
+  return RiTa.randomWord().slice(0,n);
+}
+function actionText(b) {
+	if (b) {
+		
+	}
+	else {
+		ctn=0;
+		$("#butts").hide();
+		$("#theText").html("");
+	}
 }
 
 
