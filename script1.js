@@ -17,6 +17,11 @@ function getAdjective(theWord) {
         resolve($.get('https://api.datamuse.com/words?rel_jjb=' + theWord));
     });
 }
+function getNoun(theWord) {
+    return new Promise(function (resolve, reject) {
+        resolve($.get('https://api.datamuse.com/words?rel_jja=' + theWord));
+    });
+}
 
 function boot() {
     $("#theText").hide();
@@ -84,7 +89,7 @@ function makeSentence(obj) {
 
     //
     var theOption = getRndInteger(1,5);
-    theOption = 2 //DEBUG
+    theOption = 5 //DEBUG
     switch(theOption) {
         case 1:
             theResult = titleCase("The " + noun1 + phrase01);
@@ -94,15 +99,37 @@ function makeSentence(obj) {
             getAdjective(noun1).then(function(obj){
                 var adjObj = randomFromArray(obj)
                 theResult = titleCase("The " + adjObj.word + " " + noun1);
+				if (Math.random() < 0.5) {
+					theResult += titleCase((" " + RiTa.evaluate('(at[2]|of)') + " " + randomFromArray(theStreets)));
+				}
                 showResult();
             });
             break;
         case 3:
-            // "verb+ing + the + adj1"
+            getNoun(adj1).then(function(obj){
+                var nounObj = randomFromArray(obj);
+                theResult = titleCase("The " + adj1 + " " + nounObj.word);
+				if (Math.random() < 0.5) {
+					theResult += titleCase((" " + RiTa.evaluate('(at[2]|of)') + " " + randomFromArray(theStreets)));
+				}
+                showResult();
+            });
             break;
-        case 4:
+        case 4:// "verb+ing + the + adj1"
             break;
         case 5:
+			var adjObj;
+		     getAdjective(noun1).then(function(obj){
+                adjObj = randomFromArray(obj);
+				getNoun(adj1).then(function(obj2){
+					var nounObj = randomFromArray(obj2);
+					theResult = titleCase(adjObj.word + " " + RiTa.pluralize(noun1) + " and the " + adj1 + " " + nounObj.word);
+					if (Math.random() < 0.5) {
+						theResult += titleCase((" " + RiTa.evaluate('(at[2]|of)') + " " + randomFromArray(theStreets)));
+					}
+					showResult();
+				});
+            });
             break;
     }
 

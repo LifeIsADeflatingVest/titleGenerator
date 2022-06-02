@@ -101,10 +101,10 @@
       text-align:center;
       margin: 0 auto;
       margin-top:3em;
-      width:50%;
+      width:90%;
       background-color: rgba(0,0,0,0.5);
       padding: 1em;
-      font-size: 1.3em;
+      font-size: 1.5em;
       box-sizing: border-box;
   }
   @media only screen and (max-width: 600px) {
