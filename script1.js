@@ -5,6 +5,9 @@ var randomizedLocale;
 var horrorArray = ["supernatural", "horror", "ghost", "monster", "creature", "nightmare"];
 var fantasyArray= ["supernatural", "ghost", "witch", "creature", "vampire", "werewolf", "elf", "magician", "amulet", "ring"];
 var scienceFictionArray= ["alien", "computer", "network", "robot", "cyborg", "element", "device", "computer", "entity"];
+var literaryArray = ["memory", "hate", "dismay", "mind", "thoughts", "emotions", "loneliness", "nostalgia", "feelings", "dreams"];
+var crimeArray = ["detective", "police", "murder", "suspect", "investigation", "crime", "criminal", "robbery", "mystery"];
+var romanceArray = ["love", "lover", "feelings", "marriage", "solitude", "affair", "body", "sensual", "playboy", "baron", "aristocrat"];
 var theResult = "";
 
 $(document).ready(function(){
@@ -66,14 +69,32 @@ function boot() {
             });
             break;
         case "Literary":
+		    getWordArray(randomFromArray(literaryArray)).then(function(obj){
+				randomizedLocale = randomFromArray(theStreets);
+                makeSentence(obj);
+            });
             break;
         case "Experimental":
+			madeWord = "";
+			madeWord += getRi(3);
+			madeWord += getRi(2);
+			madeWord += getRi(2);
+			getWordArray(RiTa.randomWord({ pos: "nn"})).then(function(obj){
+				randomizedLocale = madeWord;
+                makeSentence(obj);
+            });
             break;
         case "Crime":
+		    getWordArray(randomFromArray(crimeArray)).then(function(obj){
+				randomizedLocale = randomFromArray(theStreets);
+                makeSentence(obj);
+            });
             break;
         case "Romance":
-            break;
-        case "Thriller":
+			getWordArray(randomFromArray(romanceArray)).then(function(obj){
+				randomizedLocale = (" the " + randomFromArray(magicalLocales));
+                makeSentence(obj);
+            });
             break;
     }
     //
@@ -110,11 +131,11 @@ function makeSentence(obj) {
         phrase01 = (" " + RiTa.evaluate('(in the attic| in the mansion| in the house| in the basement| in the room|in ' + RiTa.evaluate('(his | her )') + ' subconscious |in ' + RiTa.evaluate('(his | her )') + ' mind| in the meadows|in the forest|)'));
     }
     else {
-        phrase01 = (" " + RiTa.evaluate('(at[2]|of)') + " " + randomizedLocale);
+        phrase01 = (" " + RiTa.evaluate('(at|of)') + " " + randomizedLocale);
     }
 
     //
-    var theOption = getRndInteger(1,5);
+    var theOption = getRndInteger(1,8); // number of…numbers greater than 5 indicate possibilities of simple (default) title
     switch(theOption) {
         case 1:
             theResult = titleCase("The " + noun1 + phrase01);
@@ -128,7 +149,7 @@ function makeSentence(obj) {
 				}
                 theResult = titleCase("The " + adjObj.word + " " + noun1);
 				if (Math.random() < 0.5) {
-					theResult += titleCase((" " + RiTa.evaluate('(at[2]|of)') + " " + randomizedLocale));
+					theResult += titleCase((" " + RiTa.evaluate('(at|of)') + " " + randomizedLocale));
 				}
                 showResult();
             });
@@ -141,7 +162,7 @@ function makeSentence(obj) {
 				}
                 theResult = titleCase("The " + adj1 + " " + nounObj.word);
 				if (Math.random() < 0.5) {
-					theResult += titleCase((" " + RiTa.evaluate('(at[2]|of)') + " " + randomizedLocale));
+					theResult += titleCase((" " + RiTa.evaluate('(at|of)') + " " + randomizedLocale));
 				}
                 showResult();
             });
@@ -176,7 +197,7 @@ function makeSentence(obj) {
 					theResult = titleCase("The " + nounObj + " who " + RiTa.conjugate(verbObj, {tense: RiTa.PAST}) + " " + nounPhrase);
 				}
 				if (Math.random() < 0.5) {
-					theResult += titleCase((" " + RiTa.evaluate('(at[2]|of)') + " " + randomizedLocale));
+					theResult += titleCase((" " + RiTa.evaluate('(at|of)') + " " + randomizedLocale));
 				}
                 showResult();
             });
@@ -195,12 +216,15 @@ function makeSentence(obj) {
 					}
 					theResult = titleCase(adjObj.word + " " + RiTa.pluralize(noun1) + " and the " + adj1 + " " + nounObj.word);
 					if (Math.random() < 0.5) {
-						theResult += titleCase((" " + RiTa.evaluate('(at[2]|of)') + " " + randomizedLocale));
+						theResult += titleCase((" " + RiTa.evaluate('(at|of)') + " " + randomizedLocale));
 					}
 					showResult();
 				});
             });
             break;
+		default: 
+			theResult = titleCase("The " + adj1 + " " + noun1);
+            showResult();
     }
 
 }
