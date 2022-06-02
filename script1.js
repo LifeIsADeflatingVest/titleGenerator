@@ -2,9 +2,9 @@ var selectedGenre = "";
 var cnt = 0;
 var madeWord;
 var randomizedLocale;
-var horrorArray = ["supernatural", "horror", "ghost", "monster", "creature", "nightmare"];
+var horrorArray = ["supernatural", "vampire", "werewolf", "demon", "witchcraft", "ghost", "monster", "creature", "nightmare"];
 var fantasyArray= ["supernatural", "ghost", "witch", "creature", "vampire", "werewolf", "elf", "magician", "amulet", "ring"];
-var scienceFictionArray= ["alien", "computer", "network", "robot", "cyborg", "element", "device", "computer", "entity"];
+var scienceFictionArray= ["alien", "computer", "network", "robot", "cyborg", "element", "device", "computer", "galaxy", "planet"];
 var literaryArray = ["memory", "hate", "dismay", "mind", "thoughts", "emotions", "loneliness", "nostalgia", "feelings", "dreams"];
 var crimeArray = ["detective", "police", "murder", "suspect", "investigation", "crime", "criminal", "robbery", "mystery"];
 var romanceArray = ["love", "lover", "feelings", "marriage", "solitude", "affair", "body", "sensual", "playboy", "baron", "aristocrat"];
@@ -17,7 +17,7 @@ $(document).ready(function(){
 
 function getWordArray(theWord) {
     return new Promise(function (resolve, reject) {
-        resolve($.get('https://api.datamuse.com/words?rel_trg=' + theWord));
+        resolve($.get('https://api.datamuse.com/words?rel_trg=' + theWord + '&topics='+ theWord + '&max=30'));
     });
 }
 function getAdjective(theWord) {
@@ -44,7 +44,7 @@ function boot() {
     switch (selectedGenre) {
         case "Horror":
             getWordArray(randomFromArray(horrorArray)).then(function(obj){
-				randomizedLocale = randomFromArray(theStreets);
+				randomizedLocale = (" " + RiTa.evaluate('(at|of)') + " " + randomFromArray(theStreets));
                 makeSentence(obj);
             });
             break;
@@ -54,7 +54,7 @@ function boot() {
 			madeWord += getRi(2);
 			madeWord += getRi(2);
 		    getWordArray(randomFromArray(fantasyArray)).then(function(obj){
-				randomizedLocale = (madeWord + " " + randomFromArray(magicalLocales));
+				randomizedLocale = (" of " + madeWord + " " + randomFromArray(magicalLocales));
                 makeSentence(obj);
             });
             break;
@@ -64,13 +64,13 @@ function boot() {
 			madeWord += getRi(2);
 			madeWord += getRi(2);
 		    getWordArray(randomFromArray(scienceFictionArray)).then(function(obj){
-				randomizedLocale = (madeWord + " " + randomFromArray(sciFiLocales.concat(magicalLocales)));
+				randomizedLocale = (" of " + madeWord + " " + randomFromArray(sciFiLocales.concat(magicalLocales)));
                 makeSentence(obj);
             });
             break;
         case "Literary":
 		    getWordArray(randomFromArray(literaryArray)).then(function(obj){
-				randomizedLocale = randomFromArray(theStreets);
+				randomizedLocale = (" " + RiTa.evaluate('(at|of)') + " " + randomFromArray(theStreets));
                 makeSentence(obj);
             });
             break;
@@ -86,13 +86,13 @@ function boot() {
             break;
         case "Crime":
 		    getWordArray(randomFromArray(crimeArray)).then(function(obj){
-				randomizedLocale = randomFromArray(theStreets);
+				randomizedLocale = (" " + RiTa.evaluate('(at|of)') + " " + randomFromArray(theStreets));
                 makeSentence(obj);
             });
             break;
         case "Romance":
 			getWordArray(randomFromArray(romanceArray)).then(function(obj){
-				randomizedLocale = (" the " + randomFromArray(magicalLocales));
+				randomizedLocale = (" of the " + randomFromArray(magicalLocales));
                 makeSentence(obj);
             });
             break;
@@ -131,11 +131,12 @@ function makeSentence(obj) {
         phrase01 = (" " + RiTa.evaluate('(in the attic| in the mansion| in the house| in the basement| in the room|in ' + RiTa.evaluate('(his | her )') + ' subconscious |in ' + RiTa.evaluate('(his | her )') + ' mind| in the meadows|in the forest|)'));
     }
     else {
-        phrase01 = (" " + RiTa.evaluate('(at|of)') + " " + randomizedLocale);
+        phrase01 = (" " + randomizedLocale);
     }
 
     //
     var theOption = getRndInteger(1,8); // number of…numbers greater than 5 indicate possibilities of simple (default) title
+
     switch(theOption) {
         case 1:
             theResult = titleCase("The " + noun1 + phrase01);
@@ -149,7 +150,7 @@ function makeSentence(obj) {
 				}
                 theResult = titleCase("The " + adjObj.word + " " + noun1);
 				if (Math.random() < 0.5) {
-					theResult += titleCase((" " + RiTa.evaluate('(at|of)') + " " + randomizedLocale));
+					theResult += titleCase(randomizedLocale);
 				}
                 showResult();
             });
@@ -162,7 +163,7 @@ function makeSentence(obj) {
 				}
                 theResult = titleCase("The " + adj1 + " " + nounObj.word);
 				if (Math.random() < 0.5) {
-					theResult += titleCase((" " + RiTa.evaluate('(at|of)') + " " + randomizedLocale));
+					theResult += titleCase(randomizedLocale);
 				}
                 showResult();
             });
@@ -170,7 +171,7 @@ function makeSentence(obj) {
         case 4:
 			getVerb(noun1).then(function(obj){
 				var tempArrayVerbs = ["examine", "understand", "see", "behold", "fear", "know", "dream", "escape", "imprison"]; // fallbacks
-				var tempArrayNouns = ["man", "woman", "entity", "creature", "entity", "vision"];//fallbacks
+				var tempArrayNouns = ["man", "woman", "entity", "creature", "being", "vision"];//fallbacks
 				for (var i=0;i<obj.length;i++) {
 					if (obj[i].tags != undefined) {
 						if (obj[i].tags.includes("v")) {
@@ -197,7 +198,7 @@ function makeSentence(obj) {
 					theResult = titleCase("The " + nounObj + " who " + RiTa.conjugate(verbObj, {tense: RiTa.PAST}) + " " + nounPhrase);
 				}
 				if (Math.random() < 0.5) {
-					theResult += titleCase((" " + RiTa.evaluate('(at|of)') + " " + randomizedLocale));
+					theResult += titleCase(randomizedLocale);
 				}
                 showResult();
             });
@@ -216,12 +217,47 @@ function makeSentence(obj) {
 					}
 					theResult = titleCase(adjObj.word + " " + RiTa.pluralize(noun1) + " and the " + adj1 + " " + nounObj.word);
 					if (Math.random() < 0.5) {
-						theResult += titleCase((" " + RiTa.evaluate('(at|of)') + " " + randomizedLocale));
+						theResult += titleCase(randomizedLocale);
 					}
 					showResult();
 				});
             });
             break;
+		case 6:
+			getVerb(noun1).then(function(obj){
+				var tempArrayVerbs = ["examine", "understand", "see", "behold", "fear", "know", "dream", "escape", "imprison"]; // fallbacks
+				var tempArrayNouns = ["man", "woman", "entity", "creature", "being", "vision"];//fallbacks
+				for (var i=0;i<obj.length;i++) {
+					if (obj[i].tags != undefined) {
+						if (obj[i].tags.includes("v")) {
+							tempArrayVerbs.push(obj[i].word);
+						}
+						else if (obj[i].tags.includes("n") && RiTa.isNoun(obj[i].word)) {
+							tempArrayNouns.push(obj[i].word);
+						}
+					}
+				}
+				var nounPhrase;
+				if (Math.random() < 0.5) {
+					nounPhrase = (RiTa.evaluate('(the | )') + " " + RiTa.pluralize(noun1));
+				}
+				else {
+					nounPhrase = ("the " + RiTa.singularize(noun1));
+				}
+                var verbObj = randomFromArray(tempArrayVerbs);
+				var nounObj = randomFromArray(tempArrayNouns);
+				if (Math.random() < 0.5) {
+					theResult = titleCase(RiTa.evaluate('(as|when|how)') + " " + RiTa.evaluate('(I|she|he)') + " " + RiTa.conjugate(verbObj, {tense: RiTa.PAST}) + " " + nounPhrase);
+				}
+				else {
+					theResult = titleCase("The " + nounObj + " " + RiTa.conjugate(verbObj, {form: RiTa.GERUND}) + " " + nounPhrase);
+				}
+				if (Math.random() < 0.5) {
+					theResult += titleCase(randomizedLocale);
+				}
+                showResult();
+            });
+			break;			
 		default: 
 			theResult = titleCase("The " + adj1 + " " + noun1);
             showResult();
