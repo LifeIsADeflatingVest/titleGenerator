@@ -17,7 +17,7 @@ $(document).ready(function(){
 
 function getWordArray(theWord) {
     return new Promise(function (resolve, reject) {
-        resolve($.get('https://api.datamuse.com/words?rel_trg=' + theWord + '&topics='+ theWord + '&max=30'));
+        resolve($.get('https://api.datamuse.com/words?ml=' + theWord + '&topics='+ theWord + '&max=30'));
     });
 }
 function getAdjective(theWord) {
@@ -80,7 +80,7 @@ function boot() {
 			madeWord += getRi(2);
 			madeWord += getRi(2);
 			getWordArray(RiTa.randomWord({ pos: "nn"})).then(function(obj){
-				randomizedLocale = madeWord;
+				randomizedLocale = (" " + madeWord);
                 makeSentence(obj);
             });
             break;
@@ -103,9 +103,11 @@ function boot() {
 }
 
 function makeSentence(obj) {
-    var nounArr = ["being"];//fallbacks
+    var nounArr = [];
+	var adjArr = [];
+	var nounArrFallBack = ["being", "creature", "form"];
+	var adjArrFallBack = ["interesting", "unique", "peculiar", "odd", "unknown", "marvelous", "fantastic", "curious"];
     var noun1;
-    var adjArr = ["interesting"];//fallbacks
     var adj1;
     var phrase01;
 
@@ -117,8 +119,22 @@ function makeSentence(obj) {
             adjArr.push(obj[i].word);
         }
     }
+	
+	if (nounArr.length < 1) {
+		for (var i=0;i<nounArrFallBack.length;i++) {
+			nounArr.push(nounArrFallBack[i]);
+		}
+	}
+	if (adjArr.length < 1) {
+		for (var i=0;i<adjArrFallBack.length;i++) {
+			adjArr.push(adjArrFallBack[i]);
+		}
+	}
 
     noun1 = randomFromArray(nounArr);
+	if (noun1=="in") {
+		noun1 = RiTa.randomWord({ pos: "nn"});//fallback
+	}
     if (Math.random() < 0.5) {
         noun1 = RiTa.singularize(noun1);
     }
@@ -226,7 +242,7 @@ function makeSentence(obj) {
 		case 6:
 			getVerb(noun1).then(function(obj){
 				var tempArrayVerbs = ["examine", "understand", "see", "behold", "fear", "know", "dream", "escape", "imprison"]; // fallbacks
-				var tempArrayNouns = ["man", "woman", "entity", "creature", "being", "vision"];//fallbacks
+				var tempArrayNouns = ["man", "woman"];//fallbacks
 				for (var i=0;i<obj.length;i++) {
 					if (obj[i].tags != undefined) {
 						if (obj[i].tags.includes("v")) {
@@ -246,6 +262,9 @@ function makeSentence(obj) {
 				}
                 var verbObj = randomFromArray(tempArrayVerbs);
 				var nounObj = randomFromArray(tempArrayNouns);
+				if (nounObj=="in") {
+					nounObj = RiTa.randomWord({ pos: "nn"});//fallback
+				}
 				if (Math.random() < 0.5) {
 					theResult = titleCase(RiTa.evaluate('(as|when|how)') + " " + RiTa.evaluate('(I|she|he)') + " " + RiTa.conjugate(verbObj, {tense: RiTa.PAST}) + " " + nounPhrase);
 				}
@@ -259,7 +278,12 @@ function makeSentence(obj) {
             });
 			break;			
 		default: 
-			theResult = titleCase("The " + adj1 + " " + noun1);
+			if (Math.random() < 0.5) {
+				theResult = titleCase("The " + adj1 + " " + noun1);
+			}
+			else {
+				theResult = titleCase(RiTa.evaluate('('+adj1+').art()') + " " + RiTa.singularize(noun1));
+			}
             showResult();
     }
 
