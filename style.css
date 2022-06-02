@@ -116,9 +116,6 @@
       font-size: 1.5em;
       box-sizing: border-box;
   }
-  #butts {
-	  display:none;
-  }
   @media only screen and (max-width: 600px) {
       #container {
           width: 98%;

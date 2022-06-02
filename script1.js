@@ -185,8 +185,14 @@ function makeSentence(obj) {
 			var adjObj;
 		     getAdjective(noun1).then(function(obj){
                 adjObj = randomFromArray(obj);
+				if (adjObj==undefined) {
+					adjObj = RiTa.randomWord({ pos: "jj"});//fallback
+				}
 				getNoun(adj1).then(function(obj2){
 					var nounObj = randomFromArray(obj2);
+					if (nounObj==undefined) {
+						nounObj = RiTa.randomWord({ pos: "nn"});//fallback
+					}
 					theResult = titleCase(adjObj.word + " " + RiTa.pluralize(noun1) + " and the " + adj1 + " " + nounObj.word);
 					if (Math.random() < 0.5) {
 						theResult += titleCase((" " + RiTa.evaluate('(at[2]|of)') + " " + randomizedLocale));
@@ -204,7 +210,7 @@ function showResult() {
 		$("#theText").append("<br>");
 	}
 	else {
-		$("#butts").fadeIn(1500);
+		$("#theText").html("");
 	}
 	var sp = document.createElement("span");
 	sp.setAttribute("id", ("span"+cnt));
@@ -236,19 +242,20 @@ function getRi(n) {
   return RiTa.randomWord().slice(0,n);
 }
 function actionText(b) {
-	if (b) {
-		
+	if (cnt==0) {
+		$("#theText").html("<span style='color:darkred'>The list is empty!</span>");
 	}
 	else {
-		ctn=0;
-		$("#butts").hide();
-		$("#theText").html("");
+		if (b) {
+			var hiddenElement = document.createElement('a');
+			hiddenElement.href = 'data:attachment/text,' + encodeURI(document.getElementById('theText').innerText);
+			hiddenElement.target = '_blank';
+			hiddenElement.download = 'TitleGenerator.txt';
+			hiddenElement.click();
+		}
+		else {
+			cnt=0;
+			$("#theText").html("");
+		}
 	}
 }
-
-
-
-/*
-1) "The" + vampire in/of the 
-2) 
-*/
