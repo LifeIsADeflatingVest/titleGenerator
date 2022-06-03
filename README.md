@@ -1,1 +1,1 @@
-I made this book title generator out of boredom, and it's not really meant as any remotely serious tool, but it can be fun to play with. Try it [here](https://rawcdn.githack.com/LifeIsADeflatingVest/titleGenerator/main/index.html)
+I made this book title generator out of boredom, and it's not really meant as any remotely serious tool, but it can be fun to play with. Try it [here](https://rawcdn.githack.com/LifeIsADeflatingVest/titleGenerator/7ddde814ed87aaef0d523847b2c4c419d219203f/index.html)
