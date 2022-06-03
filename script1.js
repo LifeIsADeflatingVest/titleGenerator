@@ -2,12 +2,14 @@ var selectedGenre = "";
 var cnt = 0;
 var madeWord;
 var randomizedLocale;
-var horrorArray = ["supernatural", "vampire", "werewolf", "demon", "witchcraft", "ghost", "monster", "creature", "nightmare"];
+var horrorArray = ["supernatural", "vampire", "werewolf", "demon", "witchcraft", "ghost", "monster", "creature", "nightmare", "madness"];
 var fantasyArray= ["supernatural", "ghost", "witch", "creature", "vampire", "werewolf", "elf", "magician", "amulet", "ring"];
 var scienceFictionArray= ["alien", "computer", "network", "robot", "cyborg", "element", "device", "computer", "galaxy", "planet"];
-var literaryArray = ["memory", "hate", "dismay", "mind", "thoughts", "emotions", "loneliness", "nostalgia", "feelings", "dreams"];
-var crimeArray = ["detective", "police", "murder", "suspect", "investigation", "crime", "criminal", "robbery", "mystery"];
-var romanceArray = ["love", "lover", "feelings", "marriage", "solitude", "affair", "body", "sensual", "playboy", "baron", "aristocrat"];
+var literaryArray = ["memory", "hate", "dismay", "mind", "thoughts", "emotions", "loneliness", "nostalgia", "feelings", "dreams", "vision"];
+var crimeArray = ["detective", "police", "murder", "suspect", "investigation", "crime", "criminal", "robbery", "embassy", "mystery", "spy", "secret"];
+var romanceArray = ["love", "lover", "feelings", "marriage", "solitude", "affair", "passion", "lips", "kiss", "body", "sensual", "prostitute", "playboy", "baron", "aristocrat"];
+var tempArrayVerbs = ["examine", "understand", "see", "behold", "fear", "know", "dream", "escape", "imprison"]; // fallbacks
+var tempArrayNouns = ["man", "woman", "entity", "creature", "being", "vision"];//fallbacks
 var theResult = "";
 
 $(document).ready(function(){
@@ -151,8 +153,7 @@ function makeSentence(obj) {
     }
 
     //
-    var theOption = getRndInteger(1,8); // number of…numbers greater than 5 indicate possibilities of simple (default) title
-
+    var theOption = getRndInteger(1,10); // number of…numbers greater than 8 indicate possibilities of simple (default) title
     switch(theOption) {
         case 1:
             theResult = titleCase("The " + noun1 + phrase01);
@@ -186,17 +187,23 @@ function makeSentence(obj) {
             break;
         case 4:
 			getVerb(noun1).then(function(obj){
-				var tempArrayVerbs = ["examine", "understand", "see", "behold", "fear", "know", "dream", "escape", "imprison"]; // fallbacks
-				var tempArrayNouns = ["man", "woman", "entity", "creature", "being", "vision"];//fallbacks
+				var tmpArrV = [];
+				var tmpArrN = [];
 				for (var i=0;i<obj.length;i++) {
 					if (obj[i].tags != undefined) {
 						if (obj[i].tags.includes("v")) {
-							tempArrayVerbs.push(obj[i].word);
+							tmpArrV.push(obj[i].word);
 						}
 						else if (obj[i].tags.includes("n") && RiTa.isNoun(obj[i].word)) {
-							tempArrayNouns.push(obj[i].word);
+							tmpArrN.push(obj[i].word);
 						}
 					}
+				}
+				if (tmpArrN.length < 2) {
+					tmpArrN = tempArrayNouns;
+				}
+				if (tmpArrV.length < 2) {
+					tmpArrV = tempArrayVerbs;
 				}
 				var nounPhrase;
 				if (Math.random() < 0.5) {
@@ -205,13 +212,13 @@ function makeSentence(obj) {
 				else {
 					nounPhrase = ("the " + RiTa.singularize(noun1));
 				}
-                var verbObj = randomFromArray(tempArrayVerbs);
-				var nounObj = randomFromArray(tempArrayNouns);
+                var verbObj = randomFromArray(tmpArrV);
+				var nounObj = randomFromArray(tmpArrN);
 				if (Math.random() < 0.5) {
 					theResult = titleCase(RiTa.conjugate(verbObj, {form: RiTa.GERUND}) + " " + nounPhrase);
 				}
 				else {
-					theResult = titleCase("The " + nounObj + " who " + RiTa.conjugate(verbObj, {tense: RiTa.PAST}) + " " + nounPhrase);
+					theResult = titleCase("The " + nounObj + " that " + RiTa.conjugate(verbObj, {tense: RiTa.PAST}) + " " + nounPhrase);
 				}
 				if (Math.random() < 0.5) {
 					theResult += titleCase(randomizedLocale);
@@ -241,17 +248,23 @@ function makeSentence(obj) {
             break;
 		case 6:
 			getVerb(noun1).then(function(obj){
-				var tempArrayVerbs = ["examine", "understand", "see", "behold", "fear", "know", "dream", "escape", "imprison"]; // fallbacks
-				var tempArrayNouns = ["man", "woman"];//fallbacks
+				var tmpArrV = [];
+				var tmpArrN = [];
 				for (var i=0;i<obj.length;i++) {
 					if (obj[i].tags != undefined) {
 						if (obj[i].tags.includes("v")) {
-							tempArrayVerbs.push(obj[i].word);
+							tmpArrV.push(obj[i].word);
 						}
 						else if (obj[i].tags.includes("n") && RiTa.isNoun(obj[i].word)) {
-							tempArrayNouns.push(obj[i].word);
+							tmpArrN.push(obj[i].word);
 						}
 					}
+				}
+				if (tmpArrN.length < 2) {
+					tmpArrN = tempArrayNouns;
+				}
+				if (tmpArrV.length < 2) {
+					tmpArrV = tempArrayVerbs;
 				}
 				var nounPhrase;
 				if (Math.random() < 0.5) {
@@ -260,8 +273,8 @@ function makeSentence(obj) {
 				else {
 					nounPhrase = ("the " + RiTa.singularize(noun1));
 				}
-                var verbObj = randomFromArray(tempArrayVerbs);
-				var nounObj = randomFromArray(tempArrayNouns);
+                var verbObj = randomFromArray(tmpArrV);
+				var nounObj = randomFromArray(tmpArrN);
 				if (nounObj=="in") {
 					nounObj = RiTa.randomWord({ pos: "nn"});//fallback
 				}
@@ -276,7 +289,43 @@ function makeSentence(obj) {
 				}
                 showResult();
             });
-			break;			
+			break;		
+		case 7:
+			getVerb(noun1).then(function(obj){
+				var tmpArr = [];
+				for (var i=0;i<obj.length;i++) {
+					if (obj[i].tags != undefined) {
+						if (obj[i].tags.includes("v")) {
+							tmpArr.push(obj[i].word);
+						}
+					}
+				}
+				if (tmpArr.length < 2) {
+					tmpArr = tempArrayVerbs;
+				}
+                var verbObj = randomFromArray(tmpArr);
+                theResult = titleCase("To " + RiTa.conjugate(verbObj, {tense: RiTa.INFINITIVE}) + " " + RiTa.evaluate('('+RiTa.singularize(noun1)+').art()'));
+                showResult();
+            });
+			break;
+		case 8:
+			getVerb(noun1).then(function(obj){
+				var tmpArr = [];
+				for (var i=0;i<obj.length;i++) {
+					if (obj[i].tags != undefined) {
+						if (obj[i].tags.includes("v")) {
+							tmpArr.push(obj[i].word);
+						}
+					}
+				}
+				if (tmpArr.length < 2) {
+					tmpArr = tempArrayVerbs;
+				}
+                var verbObj = randomFromArray(tmpArr);
+                theResult = titleCase(RiTa.conjugate(verbObj, {tense: RiTa.INFINITIVE}) + " the " + RiTa.singularize(noun1));
+                showResult();
+            });
+			break;		
 		default: 
 			if (Math.random() < 0.5) {
 				theResult = titleCase("The " + adj1 + " " + noun1);
@@ -291,7 +340,7 @@ function makeSentence(obj) {
 
 function showResult() {
 	if (cnt>0) {
-		$("#theText").append("<br>");
+		$("#theText").append("<br><hr>");
 	}
 	else {
 		$("#theText").html("");

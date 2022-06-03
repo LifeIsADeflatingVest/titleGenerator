@@ -68,6 +68,10 @@
       border-radius: 0.5em;
       margin-bottom: 2em;
   }
+  hr {
+	  color: darkslategray;
+	  border-bottom: 0.1em solid darkslategray;
+  }
   .button {
       font-family: 'Itim', cursive;
       font-size:1em;
@@ -106,6 +110,7 @@
 	  overflow:auto;
 	  scrollbar-color: darkslategray #2e5a9e;
 	  scrollbar-width: thin;
+	  box-sizing:border-box;
   }
   #theText {
       text-align:left;
