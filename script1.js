@@ -386,6 +386,10 @@ function actionText(b) {
 			hiddenElement.target = '_blank';
 			hiddenElement.download = 'TitleGenerator.txt';
 			hiddenElement.click();
+			$("#fooOK").fadeIn(1000);
+			setTimeout(function(){
+				$("#fooOK").fadeOut(1500);
+			}, 1500);
 		}
 		else {
 			cnt=0;
